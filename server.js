@@ -6,6 +6,8 @@ const { exec } = require('child_process');
 const app = express();
 app.use(bodyParser.json());
 
+
+// Buffett place
 app.post('/graph_rag/send_query', async (req, res) => {
     try {
         const { query } = req.body; // Get user query
@@ -55,6 +57,15 @@ app.post('/graph_rag/send_query', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+
+
+
+// henry place
+
+
+
 
 // Start server
 const PORT = process.env.PORT || 3000;

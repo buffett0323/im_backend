@@ -1,1 +1,16 @@
-numpy
+fastapi[all]
+sqlmodel
+psycopg2-binary
+requests
+pandas
+torch
+transformers
+firebase-admin
+pillow
+aiohttp
+inference_sdk
+supervision
+google.generativeai
+torchvision
+joblib
+scikit-learn

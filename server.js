@@ -3,23 +3,30 @@ const { Pool } = require('pg');
 const app = express();
 const port = 3000;
 
+require('dotenv').config(); // Load environment variables from .env file
+
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
 // PostgreSQL connection configuration
 const pool = new Pool({
-  user: 'your_user',        // Replace with your PostgreSQL username
-  host: 'localhost',        // Replace with your PostgreSQL server address
-  database: 'your_db_name', // Replace with your database name
-  password: 'your_password',// Replace with your PostgreSQL password
-  port: 5432,               // Default PostgreSQL port
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 });
+
+
 
 // Test the database connection
 pool.connect()
   .then(() => console.log('Connected to PostgreSQL'))
   .catch(err => console.error('Connection error', err.stack));
 
+
+
+// Buffett Place  
 // API to upload articles to the database
 app.post('/upload-article', async (req, res) => {
   const { title, content, author } = req.body;
@@ -46,7 +53,15 @@ app.post('/upload-article', async (req, res) => {
   }
 });
 
+
+
+// henry place
+
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+module.exports = pool;

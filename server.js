@@ -1,5 +1,8 @@
 const express = require('express');
+const { parsePdfToExtractDetails } = require('./pdfParser/pdfParser');
 const { Pool } = require('pg');
+const { execFile } = require('child_process');
+const path = require('path');
 const app = express();
 const port = 3000;
 
@@ -29,40 +32,48 @@ pool.connect()
 // Buffett's APIs 
 // 1. API to upload documents to the database
 app.post('/upload-document', async (req, res) => {
-  // expected to be a pdf input
+  // Extract the PDF document from the request
   const { document } = req.body;
 
-  if (!title || !content || !author) {
-    return res.status(400).json({ message: 'Missing required fields' });
+  if (!document) {
+    return res.status(400).json({ message: 'PDF document is required' });
   }
 
-  //   CREATE TABLE Document (
-  //     DocumentID SERIAL PRIMARY KEY,
-  //     Title VARCHAR NOT NULL,
-  //     Publisher VARCHAR,
-  //     Date DATE,
-  //     Summary TEXT,
-  //     Author VARCHAR,
-  //     Full_text TEXT NOT NULL,
-  //     Analyze_state VARCHAR,
-  //     Category VARCHAR
-  // );
-
-  const query = `
-    INSERT INTO Document (Title, Publisher, Date, Summar, Author, Full_text, Analyze_state, Category)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    RETURNING *;
-  `;
-
   try {
-    const result = await pool.query(query, [title, content, author]);
+    // Parse the PDF to extract details
+    const { title, publisher, date, summary, author, fullText, analyzeState, category } = await parsePdfToExtractDetails(document);
+
+    if (!title || !fullText || !author) {
+      return res.status(400).json({ message: 'Missing required fields (Title, Full_text, or Author)' });
+    }
+
+    // SQL query to insert document details into the database
+    const query = `
+      INSERT INTO Document (Title, Publisher, Date, Summary, Author, Full_text, Analyze_state, Category)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING *;
+    `;
+
+    // Insert into the database
+    const result = await pool.query(query, [
+      title,
+      publisher,
+      date,
+      summary,
+      author,
+      fullText,
+      analyzeState || 'Pending',
+      category || 'Uncategorized',
+    ]);
+
+    // Send success response
     res.status(201).json({
-      message: 'Article uploaded successfully',
-      article: result.rows[0],
+      message: 'Document uploaded successfully',
+      document: result.rows[0],
     });
   } catch (err) {
-    console.error('Error uploading article', err.stack);
-    res.status(500).json({ message: 'Error uploading article' });
+    console.error('Error uploading document:', err.stack);
+    res.status(500).json({ message: 'Error uploading document' });
   }
 });
 

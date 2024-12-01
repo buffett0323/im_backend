@@ -29,7 +29,8 @@ pool.connect()
 // Buffett's APIs 
 // 1. API to upload documents to the database
 app.post('/upload-document', async (req, res) => {
-  const { title, content, author } = req.body;
+  // expected to be a pdf input
+  const { document } = req.body;
 
   if (!title || !content || !author) {
     return res.status(400).json({ message: 'Missing required fields' });
@@ -48,8 +49,8 @@ app.post('/upload-document', async (req, res) => {
   // );
 
   const query = `
-    INSERT INTO Document (title, content, author)
-    VALUES ($1, $2, $3)
+    INSERT INTO Document (Title, Publisher, Date, Summar, Author, Full_text, Analyze_state, Category)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     RETURNING *;
   `;
 
@@ -67,8 +68,79 @@ app.post('/upload-document', async (req, res) => {
 
 
 
+// 2. API to filter documents to the database
+app.post('/filter-document', async (req, res) => {
+  const { condition } = req.body;
+
+  if (!condition) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  const query = `
+
+  `;
+
+  try {
+    const result = await pool.query(query, [title, content, author]);
+    res.status(201).json({
+      message: 'Article filtered successfully',
+      article: result.rows[0],
+    });
+  } catch (err) {
+    console.error('Error filtering article', err.stack);
+    res.status(500).json({ message: 'Error filtering article' });
+  }
+});
 
 
+// 3. API to tag documents
+app.post('/tagging', async (req, res) => {
+  const { condition } = req.body;
+
+  if (!condition) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  const query = `
+
+  `;
+
+  try {
+    const result = await pool.query(query, [title, content, author]);
+    res.status(201).json({
+      message: 'Article uploaded successfully',
+      article: result.rows[0],
+    });
+  } catch (err) {
+    console.error('Error uploading article', err.stack);
+    res.status(500).json({ message: 'Error uploading article' });
+  }
+});
+
+
+// 4. API to get analytical results
+app.post('/get_anal_res', async (req, res) => {
+  const { condition } = req.body;
+
+  if (!condition) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
+  const query = `
+
+  `;
+
+  try {
+    const result = await pool.query(query, [title, content, author]);
+    res.status(201).json({
+      message: 'Article uploaded successfully',
+      article: result.rows[0],
+    });
+  } catch (err) {
+    console.error('Error uploading article', err.stack);
+    res.status(500).json({ message: 'Error uploading article' });
+  }
+});
 
 // henry place
 

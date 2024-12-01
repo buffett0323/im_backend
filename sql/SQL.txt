@@ -1,0 +1,84 @@
+-- 1. 建立 Tag_content 表
+CREATE TABLE Tag_content (
+    TagID SERIAL PRIMARY KEY,
+    Description TEXT
+);
+
+-- 2. 建立 Theme_content 表
+CREATE TABLE Theme_content (
+    ThemeID SERIAL PRIMARY KEY,
+    Description TEXT
+);
+
+-- 3. 建立 Entity_content 表
+CREATE TABLE Entity_content (
+    EntityID SERIAL PRIMARY KEY,
+    Entity_name VARCHAR,
+    Description TEXT
+);
+
+-- 4. 建立 Document 表
+CREATE TABLE Document (
+    DocumentID SERIAL PRIMARY KEY,
+    Title VARCHAR NOT NULL,
+    Publisher VARCHAR,
+    Date DATE,
+    Summary TEXT,
+    Author VARCHAR,
+    Full_text TEXT NOT NULL,
+    Analyze_state VARCHAR,
+    Category VARCHAR
+);
+
+-- 5. 建立 Tag 表
+CREATE TABLE Tag (
+    DocumentID INT REFERENCES Document(DocumentID),
+    TagID INT REFERENCES Tag_content(TagID),
+    PRIMARY KEY (DocumentID, TagID)
+);
+
+-- 6. 建立 Theme 表
+CREATE TABLE Theme (
+    DocumentID INT REFERENCES Document(DocumentID),
+    ThemeID INT REFERENCES Theme_content(ThemeID),
+    PRIMARY KEY (DocumentID, ThemeID)
+);
+
+-- 7. 建立 Entity 表
+CREATE TABLE Entity (
+    DocumentID INT REFERENCES Document(DocumentID),
+    EntityID INT REFERENCES Entity_content(EntityID),
+    PRIMARY KEY (DocumentID, EntityID)
+);
+
+-- 8. 建立 Embedding 表
+CREATE TABLE Embedding (
+    EmbedID SERIAL PRIMARY KEY,
+    Summary TEXT,
+    Embedding VECTOR,
+    Metadata JSON
+);
+
+-- 9. 建立 Output 表
+CREATE TABLE Output (
+    OutputID SERIAL PRIMARY KEY,
+    Query TEXT,
+    Response TEXT
+);
+
+-- 10. 建立 Output_chunks 表
+CREATE TABLE Output_chunks (
+    OutputID INT REFERENCES Output(OutputID),
+    EmbedID INT REFERENCES Embedding(EmbedID),
+    Score FLOAT,
+    PRIMARY KEY (OutputID, EmbedID)
+);
+
+-- 11. 建立 Comparison_result 表
+CREATE TABLE Comparison_result (
+    ResultID SERIAL PRIMARY KEY,
+    OutputID1 INT REFERENCES Output(OutputID),
+    OutputID2 INT REFERENCES Output(OutputID),
+    Result TEXT,
+    Insight TEXT
+);

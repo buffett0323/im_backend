@@ -26,17 +26,29 @@ pool.connect()
 
 
 
-// Buffett Place  
-// API to upload articles to the database
-app.post('/upload-article', async (req, res) => {
+// Buffett's APIs 
+// 1. API to upload documents to the database
+app.post('/upload-document', async (req, res) => {
   const { title, content, author } = req.body;
 
   if (!title || !content || !author) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
+  //   CREATE TABLE Document (
+  //     DocumentID SERIAL PRIMARY KEY,
+  //     Title VARCHAR NOT NULL,
+  //     Publisher VARCHAR,
+  //     Date DATE,
+  //     Summary TEXT,
+  //     Author VARCHAR,
+  //     Full_text TEXT NOT NULL,
+  //     Analyze_state VARCHAR,
+  //     Category VARCHAR
+  // );
+
   const query = `
-    INSERT INTO articles (title, content, author)
+    INSERT INTO Document (title, content, author)
     VALUES ($1, $2, $3)
     RETURNING *;
   `;
@@ -52,6 +64,9 @@ app.post('/upload-article', async (req, res) => {
     res.status(500).json({ message: 'Error uploading article' });
   }
 });
+
+
+
 
 
 

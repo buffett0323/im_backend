@@ -11,6 +11,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 import os
+import psycopg2
 import firebase_admin
 
 load_dotenv()
@@ -18,6 +19,7 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 # SQLAlchemy setup
+print("DB:",DATABASE_URL)
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
@@ -40,11 +42,11 @@ def get_db():
     finally:
         db.close()
 
-# Firebase storage
-cred = credentials.Certificate("serviceAccountKey.json")
-firebase_admin.initialize_app(cred, {
-    'storageBucket': 'quiztory-f5e09.appspot.com'
-})
+# # Firebase storage
+# cred = credentials.Certificate("serviceAccountKey.json")
+# firebase_admin.initialize_app(cred, {
+#     'storageBucket': 'quiztory-f5e09.appspot.com'
+# })
 
 origins = ["*"]
 app.add_middleware(

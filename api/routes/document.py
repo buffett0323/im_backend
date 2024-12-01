@@ -27,7 +27,8 @@ async def upload_csv(file: UploadFile = File(...), session: Session = Depends(ge
             article_name=row['article_name'],
             author=row['author'],
             publisher=row['publisher'],
-            date=row['date']
+            date=row['date'],
+            
         )
         session.add(article)
     session.commit()

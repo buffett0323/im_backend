@@ -12,6 +12,6 @@ curl -X POST http://localhost:3000/graph_rag/send_query \
 ```
 
 
-### Buffett Qs
-1. after loading document, how to get the title, publisher, date? by LLM?
-2. 
+### Instructions
+1. Load the ```sql/DB.sql``` into postgres
+2. Get env done

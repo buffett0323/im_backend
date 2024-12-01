@@ -14,3 +14,7 @@ google.generativeai
 torchvision
 joblib
 scikit-learn
+
+uvicorn 
+sqlalchemy 
+psycopg2  

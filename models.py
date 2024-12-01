@@ -10,3 +10,9 @@ class Document(SQLModel, table=True):
     full_text: str
     analyze_state: str
     category: str
+    
+
+class Theme(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    theme_name: str
+    definition: str
